@@ -1,0 +1,70 @@
+🎉 Parabéns! {{ .Chart.Name }} foi instalado com sucesso!
+
+Release Name: {{ .Release.Name }}
+Namespace: {{ .Release.Namespace }}
+Chart Version: {{ .Chart.Version }}
+App Version: {{ .Chart.AppVersion }}
+
+📝 Para acessar sua aplicação:
+
+{{- if .Values.ingress.enabled }}
+{{- range $host := .Values.ingress.hosts }}
+  🌐 Ingress URL: http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $host.host }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+  export NODE_PORT=$(kubectl get --namespace {{ .Release.Namespace }} -o jsonpath="{.spec.ports[0].nodePort}" services {{ include "myapp.fullname" . }})
+  export NODE_IP=$(kubectl get nodes --namespace {{ .Release.Namespace }} -o jsonpath="{.items[0].status.addresses[0].address}")
+  echo http://$NODE_IP:$NODE_PORT
+{{- else if contains "LoadBalancer" .Values.service.type }}
+  NOTA: Pode levar alguns minutos para o LoadBalancer ficar disponível.
+  
+  Execute os comandos abaixo para obter o IP:
+  
+  export SERVICE_IP=$(kubectl get svc --namespace {{ .Release.Namespace }} {{ include "myapp.fullname" . }} --template "{{"{{ range (index .status.loadBalancer.ingress 0) }}{{.}}{{ end }}"}}")
+  echo http://$SERVICE_IP:{{ .Values.service.port }}
+{{- else if contains "ClusterIP" .Values.service.type }}
+  Execute port-forward para acessar localmente:
+  
+  kubectl --namespace {{ .Release.Namespace }} port-forward svc/{{ include "myapp.fullname" . }} 8080:{{ .Values.service.port }}
+  
+  Em seguida acesse: http://127.0.0.1:8080
+{{- end }}
+
+🔍 Comandos úteis:
+
+  # Ver os pods
+  kubectl get pods -n {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "myapp.name" . }},app.kubernetes.io/instance={{ .Release.Name }}"
+  
+  # Ver logs
+  kubectl logs -n {{ .Release.Namespace }} -l "app.kubernetes.io/name={{ include "myapp.name" . }}" --tail=50 -f
+  
+  # Descrever o deployment
+  kubectl describe deployment -n {{ .Release.Namespace }} {{ include "myapp.fullname" . }}
+  
+  # Atualizar o release
+  helm upgrade {{ .Release.Name }} {{ .Chart.Name }} -n {{ .Release.Namespace }}
+  
+  # Desinstalar o release
+  helm uninstall {{ .Release.Name }} -n {{ .Release.Namespace }}
+
+{{- if .Values.autoscaling.enabled }}
+⚡ Autoscaling está HABILITADO:
+  - Min replicas: {{ .Values.autoscaling.minReplicas }}
+  - Max replicas: {{ .Values.autoscaling.maxReplicas }}
+  - Target CPU: {{ .Values.autoscaling.targetCPUUtilizationPercentage }}%
+  {{- if .Values.autoscaling.targetMemoryUtilizationPercentage }}
+  - Target Memory: {{ .Values.autoscaling.targetMemoryUtilizationPercentage }}%
+  {{- end }}
+{{- end }}
+
+{{- if .Values.livenessProbe.enabled }}
+✅ Liveness Probe: Habilitado ({{ .Values.livenessProbe.httpGet.path }})
+{{- end }}
+
+{{- if .Values.readinessProbe.enabled }}
+✅ Readiness Probe: Habilitado ({{ .Values.readinessProbe.httpGet.path }})
+{{- end }}
+
+📚 Documentação: https://github.com/seu-usuario/myapp
+
+Aproveite! 🚀

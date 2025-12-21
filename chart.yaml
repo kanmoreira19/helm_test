@@ -1,0 +1,16 @@
+apiVersion: v2
+name: myapp
+description: Um Chart Helm completo para aplicação web
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - web
+  - application
+  - kubernetes
+maintainers:
+  - name: Seu Nome
+    email: seu.email@example.com
+home: https://github.com/kanmoreira19/myapp
+sources:
+  - https://github.com/kanmoreira19/myapp
