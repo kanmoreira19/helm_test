@@ -101,7 +101,7 @@ detect_k8s_environment() {
 
 # Verificar pré-requisitos
 check_prerequisites() {
-    log_info "Verificando pré-requisitos..."
+    log_info "Verificando pré-requisitos.."
 
     # Verificar kubectl
     if ! command -v $KUBECTL &> /dev/null; then
@@ -132,7 +132,7 @@ check_prerequisites() {
 
 # Validar o chart
 validate_chart() {
-    log_info "Validando o chart..."
+    log_info "Validando o chart.."
     
     if ! $HELM lint "$CHART_PATH" &> /dev/null; then
         log_error "Validação do chart falhou"
@@ -235,7 +235,7 @@ EOF
 
 # Instalar o chart
 install_chart() {
-    log_info "Instalando o chart..."
+    log_info "Instalando o chart.."
     
     local install_cmd="$HELM install $RELEASE_NAME $CHART_PATH"
     

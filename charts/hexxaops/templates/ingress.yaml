@@ -2,9 +2,9 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: {{ include "hexxaops.fullname" . }}
+  name: {{ include "nginx-deployment.fullname" . }}
   labels:
-    {{- include "hexxaops.labels" . | nindent 4 }}
+    {{- include "nginx-deployment.labels" . | nindent 4 }}
   {{- with .Values.ingress.annotations }}
   annotations:
     {{- toYaml . | nindent 4 }}
@@ -35,7 +35,7 @@ spec:
             {{- end }}
             backend:
               service:
-                name: {{ include "hexxaops.fullname" $ }}
+                name: {{ include "nginx-deployment.fullname" $ }}
                 port:
                   number: {{ $.Values.service.port }}
           {{- end }}
